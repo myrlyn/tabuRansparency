@@ -1,5 +1,7 @@
 package tabuterminal;
 
+import java.util.Map;
+
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -35,9 +37,9 @@ public class TabuRansparency extends TabuTerminalPlugin_V1 {
 	public void initialize(String jf) {
 		window = this.getTerminalWindow();
 		menubar = window.getMenuBar();
-		spinValFac =new SpinnerValueFactory.IntegerSpinnerValueFactory(1,100,100);
+		transVal = (int)(100*(this.getTerminalWindow().getMainWindow().getOpacity()));
+		spinValFac =new SpinnerValueFactory.IntegerSpinnerValueFactory(1,100,transVal);
 		tranSpinner = new Spinner<>();
-		transVal = 100;
 		VBox.setVgrow(tranSpinner, Priority.ALWAYS);
 		dialog.initModality(Modality.APPLICATION_MODAL);
 		dialog.initOwner(window.getMainWindow());
@@ -51,8 +53,8 @@ public class TabuRansparency extends TabuTerminalPlugin_V1 {
 		VBox.setMargin(tranSpinner, new Insets(0.2, 0.2, 0.2, 0.2));
 		VBox.setMargin(okButton, new Insets(0.2, 0.2, 0.2, 0.2));
 		okButton.setOnAction(avt -> {
-			window.getMainWindow().setOpacity(tranSpinner.getValue()/100.0);
 			transVal = tranSpinner.getValue();
+			window.getMainWindow().setOpacity(transVal/100.0);
 			dialog.hide();
 		});
 		tranSpinner.setValueFactory(spinValFac);
@@ -80,5 +82,20 @@ public class TabuRansparency extends TabuTerminalPlugin_V1 {
 	public String getPluginName() {
 		return null;
 	}
-
+	@Override
+	public void applySettings() {
+		Map<String,Object> settings = this.getTerminalWindow().getSettings();
+		if (settings.containsKey("opacity")) {
+			Object o = settings.get("opacity");
+			if (o instanceof Integer) {
+				this.transVal = (Integer)o;
+				window.getMainWindow().setOpacity(transVal/100.0);
+			}
+		}
+	}
+	@Override
+	public void saveSettings() {
+		Map<String,Object> settings = this.getTerminalWindow().getSettings();
+		settings.put("opacity", transVal);
+	}
 }
