@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 
 public class TabuRansparency extends TabuTerminalPlugin_V1 {
 	private static final String OPACITY = "opacity";
-	TabuTerminal window ;
+	TabuTerminal window;
 	MenuBar menubar;
 	Double transVal = 100.0;
 	Menu transMenu = new Menu("Transparency");
@@ -27,7 +27,7 @@ public class TabuRansparency extends TabuTerminalPlugin_V1 {
 	VBox dialogVBox = new VBox();
 	Scene dialogScene = new Scene(dialogVBox, 400, 100);
 	Slider transSlider = null;
-	
+
 	public TabuRansparency(TabuTerminal jtt) {
 		super(jtt);
 	}
@@ -36,14 +36,13 @@ public class TabuRansparency extends TabuTerminalPlugin_V1 {
 	public void initialize(String jf) {
 		window = this.getTerminalWindow();
 		menubar = window.getMenuBar();
-		transVal = (100.0*(this.getTerminalWindow().getMainWindow().getOpacity()));
-		transSlider = new Slider(0,100,transVal);
+		transVal = (100.0 * (this.getTerminalWindow().getMainWindow().getOpacity()));
+		transSlider = new Slider(0, 100, transVal);
 		transSlider.setAccessibleHelp("Set Opacity");
 		transSlider.setMajorTickUnit(5.0);
 		transSlider.setShowTickMarks(true);
-		transSlider.valueProperty().addListener(val -> {
-			window.getMainWindow().setOpacity(transSlider.getValue()/100.0);
-		});
+		transSlider.valueProperty()
+				.addListener(val -> window.getMainWindow().setOpacity(transSlider.getValue() / 100.0));
 		double initialTransparency = window.getMainWindow().getOpacity();
 		VBox.setVgrow(transSlider, Priority.ALWAYS);
 		dialog.initModality(Modality.APPLICATION_MODAL);
@@ -51,7 +50,8 @@ public class TabuRansparency extends TabuTerminalPlugin_V1 {
 		dialog.setTitle("Transparency");
 		dialog.setOnCloseRequest(evt -> {
 			window.getMainWindow().setOpacity(initialTransparency);
-			transSlider.setValue(transVal=100.0*initialTransparency);
+			transVal = 100.0 * initialTransparency;
+			transSlider.setValue(transVal);
 			dialog.close();
 		});
 		Text tranText = new Text("Set Opacity %");
@@ -62,9 +62,7 @@ public class TabuRansparency extends TabuTerminalPlugin_V1 {
 		VBox.setMargin(tranText, new Insets(0.2, 0.2, 0.2, 0.2));
 		VBox.setMargin(transSlider, new Insets(0.2, 0.2, 0.2, 0.2));
 		VBox.setMargin(okButton, new Insets(0.2, 0.2, 0.2, 0.2));
-		okButton.setOnAction(avt -> {
-			setTransparency();
-		});
+		okButton.setOnAction(avt -> setTransparency());
 		menubar.getMenus().add(transMenu);
 		transMenu.getItems().add(adjustTransparencyItem);
 		dialog.setAlwaysOnTop(false);
@@ -74,9 +72,10 @@ public class TabuRansparency extends TabuTerminalPlugin_V1 {
 
 	private void setTransparency() {
 		transVal = transSlider.getValue();
-		window.getMainWindow().setOpacity(transVal/100.0);
+		window.getMainWindow().setOpacity(transVal / 100.0);
 		dialog.hide();
 	}
+
 	public void onClick() {
 		dialog.setAlwaysOnTop(true);
 		dialog.showAndWait();
@@ -88,27 +87,29 @@ public class TabuRansparency extends TabuTerminalPlugin_V1 {
 		window.getMainWindow().setOpacity(1.0);
 		dialog.hide();
 		dialog.setAlwaysOnTop(false);
-		
+
 	}
 
 	@Override
 	public String getPluginName() {
 		return "TabuRansparency";
 	}
+
 	@Override
 	public void applySettings() {
-		Map<String,Object> settings = this.getTerminalWindow().getSettings();
+		Map<String, Object> settings = this.getTerminalWindow().getSettings();
 		if (settings.containsKey(OPACITY)) {
 			Object o = settings.get(OPACITY);
 			if (o instanceof Double) {
-				this.transVal = (Double)o;
-				window.getMainWindow().setOpacity(transVal/100.0);
+				this.transVal = (Double) o;
+				window.getMainWindow().setOpacity(transVal / 100.0);
 			}
 		}
 	}
+
 	@Override
 	public void saveSettings() {
-		Map<String,Object> settings = this.getTerminalWindow().getSettings();
+		Map<String, Object> settings = this.getTerminalWindow().getSettings();
 		settings.put(OPACITY, transVal);
 	}
 }
