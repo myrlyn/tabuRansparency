@@ -80,7 +80,7 @@ public class TabuRansparency extends TabuTerminalPlugin_V1 {
 
 	@Override
 	public String getPluginName() {
-		return null;
+		return "TabuRansparency";
 	}
 	@Override
 	public void applySettings() {
