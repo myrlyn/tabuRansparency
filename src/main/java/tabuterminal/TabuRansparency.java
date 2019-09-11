@@ -25,7 +25,7 @@ public class TabuRansparency extends TabuTerminalPlugin_V1 {
 	Stage dialog = new Stage();
 	Button okButton = new Button("OK");
 	VBox dialogVBox = new VBox();
-	Scene dialogScene = new Scene(dialogVBox, 1115, 755);
+	Scene dialogScene = new Scene(dialogVBox, 400, 100);
 	Slider transSlider = null;
 	
 	public TabuRansparency(TabuTerminal jtt) {
@@ -38,10 +38,22 @@ public class TabuRansparency extends TabuTerminalPlugin_V1 {
 		menubar = window.getMenuBar();
 		transVal = (100.0*(this.getTerminalWindow().getMainWindow().getOpacity()));
 		transSlider = new Slider(0,100,transVal);
+		transSlider.setAccessibleHelp("Set Opacity");
+		transSlider.setMajorTickUnit(5.0);
+		transSlider.setShowTickMarks(true);
+		transSlider.valueProperty().addListener(val -> {
+			window.getMainWindow().setOpacity(transSlider.getValue()/100.0);
+		});
+		double initialTransparency = window.getMainWindow().getOpacity();
 		VBox.setVgrow(transSlider, Priority.ALWAYS);
 		dialog.initModality(Modality.APPLICATION_MODAL);
 		dialog.initOwner(window.getMainWindow());
 		dialog.setTitle("Transparency");
+		dialog.setOnCloseRequest(evt -> {
+			window.getMainWindow().setOpacity(initialTransparency);
+			transSlider.setValue(transVal=100.0*initialTransparency);
+			dialog.close();
+		});
 		Text tranText = new Text("Set Opacity %");
 		VBox.setVgrow(tranText, Priority.ALWAYS);
 		dialogVBox.getChildren().add(tranText);
@@ -51,15 +63,19 @@ public class TabuRansparency extends TabuTerminalPlugin_V1 {
 		VBox.setMargin(transSlider, new Insets(0.2, 0.2, 0.2, 0.2));
 		VBox.setMargin(okButton, new Insets(0.2, 0.2, 0.2, 0.2));
 		okButton.setOnAction(avt -> {
-			transVal = transSlider.getValue();
-			window.getMainWindow().setOpacity(transVal/100.0);
-			dialog.hide();
+			setTransparency();
 		});
 		menubar.getMenus().add(transMenu);
 		transMenu.getItems().add(adjustTransparencyItem);
 		dialog.setAlwaysOnTop(false);
 		adjustTransparencyItem.setOnAction(avt -> onClick());
 		dialog.setScene(dialogScene);
+	}
+
+	private void setTransparency() {
+		transVal = transSlider.getValue();
+		window.getMainWindow().setOpacity(transVal/100.0);
+		dialog.hide();
 	}
 	public void onClick() {
 		dialog.setAlwaysOnTop(true);
