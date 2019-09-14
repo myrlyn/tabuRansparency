@@ -36,6 +36,10 @@ public class TabuRansparency extends TabuTerminalPlugin_V1 {
 	public void initialize(String jf) {
 		window = this.getTerminalWindow();
 		menubar = window.getMenuBar();
+		Menu sm = this.getTerminalWindow().getSettingsMenu();
+		if (sm != null) {
+			transMenu=sm;
+		}
 		transVal = (100.0 * (this.getTerminalWindow().getMainWindow().getOpacity()));
 		transSlider = new Slider(0, 100, transVal);
 		transSlider.setAccessibleHelp("Set Opacity");
